@@ -1,0 +1,58 @@
+# The disc converter (src/dlair/converter/, dlair-convert) on every push and pull
+# request, for macOS, Linux and Windows: each build is kept as an artifact.
+# A version tag's builds go in the release instead (release.yml).
+# The converter is plain C11 with CMake; no other dependencies.
+name: Converter
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            name: linux-x64
+            exe: dlair-convert
+          - os: macos-14
+            name: macos-arm64
+            exe: dlair-convert
+          - os: windows-2022
+            name: windows-x64
+            exe: dlair-convert.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Build
+        shell: bash
+        run: |
+          cmake -S src/dlair/converter -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+
+      - name: Check it runs
+        shell: bash
+        run: |
+          exe=""
+          for e in build/${{ matrix.exe }} build/Release/${{ matrix.exe }}; do
+            if [ -f "$e" ]; then exe=$e; fi
+          done
+          if [ -z "$exe" ]; then echo "::error::no ${{ matrix.exe }} in build"; exit 1; fi
+          "$exe" --help
+          mkdir -p out
+          cp "$exe" out/
+          cp README.md LICENSE out/
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dlair-convert-${{ matrix.name }}
+          path: out/

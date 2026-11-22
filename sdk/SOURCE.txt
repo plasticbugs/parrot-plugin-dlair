@@ -1,0 +1,4 @@
+commit 3702d5831fa56e51abb026ce7b39f50b96e00ceb
+date   2026-11-21T20:52:34-08:00
+about  Dragon's Lair 0.1.6: louder
+copied 2026-11-22 by tools/update-sdk.sh
