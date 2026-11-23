@@ -81,5 +81,5 @@ cvpad_use(dlair)                            # USB game pads: the port is a host
 cvpsram_use(dlair)                          # the disc's frame numbers
 pico_enable_stdio_usb(dlair 0)
 pico_enable_stdio_uart(dlair 0)
-cvcart_plugin(dlair ID parrotcart.dlair NAME "Dragon's Lair" VERSION 0.1.6 BY "Parrot Cart"
+cvcart_plugin(dlair ID parrotcart.dlair NAME "Dragon's Lair" VERSION 0.1.7 BY "Parrot Cart"
               HOME /DLAIR USES usb-host ICON src/dlair/dlair_icon.txt FILE DLAIR.CVP README CART-README.md)
